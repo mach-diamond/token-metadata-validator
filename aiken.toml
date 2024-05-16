@@ -1,0 +1,14 @@
+name = "mach-diamond/metadata-validator"
+version = "0.0.0"
+license = "Apache-2.0"
+description = "Aiken contracts for project 'mach-diamond/metadata-validator'"
+
+[repository]
+user = "mach-diamond"
+project = "metadata-validator"
+platform = "github"
+
+[[dependencies]]
+name = "aiken-lang/stdlib"
+version = "1.8.0"
+source = "github"

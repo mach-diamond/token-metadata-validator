@@ -1,0 +1,14 @@
+{
+  "preamble": {
+    "title": "mach-diamond/metadata-validator",
+    "description": "Aiken contracts for project 'mach-diamond/metadata-validator'",
+    "version": "0.0.0",
+    "plutusVersion": "v2",
+    "compiler": {
+      "name": "Aiken",
+      "version": "v1.0.26-alpha+075668b"
+    },
+    "license": "Apache-2.0"
+  },
+  "validators": []
+}
