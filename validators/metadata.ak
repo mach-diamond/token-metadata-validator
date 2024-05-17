@@ -1,4 +1,11 @@
-
+use aiken/transaction.{
+ Mint, OutputReference, ScriptContext, Spend, Transaction,
+}
+//use metadata/types/data.{State}
+use metadata/types/actions.{InitialToken, MintActions, SpendActions, DispensingToken, MintToken,  BurnToken, Admin, Minter}
+use metadata/checks.{
+  has_unique_input
+}
 // --- Amortized Asset Transfer Smart Contract ---------------------------------
 validator(
   spent_utxo: OutputReference,
@@ -12,7 +19,6 @@ validator(
       outputs,
       extra_signatories,
       mint,
-      validity_range,
       ..
     } = transaction
 
@@ -22,15 +28,30 @@ validator(
     // Expect that the tx is minting
     expect Mint(script_policy_id) = purpose
 
-
     trace @"Mint Pre-Amble Complete"
     
     when mint_validation is {
+      InitialToken { action } ->
+       when action is {
+          MintToken -> {
+            trace @"Mint Action: Mint Initial Token"
+            {
+              has_unique_input(inputs, spent_utxo)
+            }
+          }
+          BurnToken -> {
+            trace @"Mint Action: Burn Initial Token"
+            {
+              False
+            }
+          }
+        }
       DispensingToken { action } ->
         when action is {
           MintToken -> {
             trace @"Mint Action: Mint Collateral Token"
             {
+              let isConsumingUniqueUTXO = has_unique_input(inputs, spent_utxo)
               True
             }
           }
@@ -56,11 +77,7 @@ validator(
     // Get the purpose of the tx and deconstruct its primary components
     let ScriptContext { transaction, purpose } = context
     let Transaction {
-      inputs,
-      outputs,
-      extra_signatories,
       mint,
-      validity_range,
       ..
     } = transaction
 
@@ -72,14 +89,14 @@ validator(
     // Selection of the logic gates for the spending behavior of the contract's UTXO 
     when spend_validation is {
       Admin { action } -> 
-        trace @"Admin Spend: ..."
         {
+          trace @"Admin Spend: ..."
           True
         }
 
       Minter { action } -> 
-        trace @"Minter Spend: ..."
         {
+          trace @"Minter Spend: ..."
           True
         }
 

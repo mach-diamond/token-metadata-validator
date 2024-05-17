@@ -2,6 +2,9 @@
 
 // Mint validator to issue/burn collateral token
 pub type MintActions {
+  InitialToken {
+    action: MintActionType
+  }
   DispensingToken {
     action: MintActionType
   }
