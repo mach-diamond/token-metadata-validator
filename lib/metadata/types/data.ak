@@ -8,3 +8,8 @@ pub type VKeyHash =
 pub type State {
   mint: Int,            // 
 }
+
+pub type ContractInfo {
+  state: State,            // 
+  lovelace: Int
+}
