@@ -11,5 +11,5 @@ pub fn state_update(
   script_state: State,          /// Current script state
   new_script_state: State,      /// Incoming script state
 ) -> Int {
-  new_script_state.mint - initial_conditions.mint
+  new_script_state.mint - script_state.mint
 }
