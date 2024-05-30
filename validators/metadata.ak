@@ -2,7 +2,7 @@ use aiken/transaction.{
  Mint, OutputReference, ScriptContext, Spend, Transaction,
 }
 use metadata/types/data.{State, ContractInfo}
-use metadata/types/actions.{InitialToken, MintActions, SpendActions, DispensingToken, MintToken,  BurnToken, Admin, Minter}
+use metadata/types/actions.{InitialToken, MintActions, SpendActions, VendingToken, MintToken,  BurnToken, Admin, Minter}
 use metadata/checks.{
   has_unique_input, valid_mint, state_initialization, state_update
 }
@@ -76,8 +76,8 @@ validator(
         }
       }
 
-      /// Dispensing Token
-      DispensingToken { action } -> {
+      /// Vending Token
+      VendingToken { action } -> {
 
 
         // Get the current script state - Note: no script state exists before Minting an initiating token
@@ -87,13 +87,13 @@ validator(
         when action is {
 
           MintToken -> {
-            trace @"Mint Action: Mint Collateral Token"
+            trace @"Mint Action: Mint Vending Token"
 
             let num_mint = 1
-            
+
             let isValidStateUpdate =
               state_update(script_state, incoming_script_state, num_mint)
-            let collateralTokenBeingMinted =
+            let vendingTokenBeingMinted =
               valid_mint(
                 mint,
                 script_policy_id,
@@ -102,12 +102,12 @@ validator(
               )
             and {
               isValidStateUpdate,
-              collateralTokenBeingMinted
+              vendingTokenBeingMinted
             }
           }
           
           BurnToken -> {
-            trace @"Mint Action: Burn Collateral Token"
+            trace @"Mint Action: Burn Vending Token"
             {
               True
             }

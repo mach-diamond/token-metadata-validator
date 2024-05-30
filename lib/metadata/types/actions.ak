@@ -5,7 +5,7 @@ pub type MintActions {
   InitialToken {
     action: MintActionType
   }
-  DispensingToken {
+  VendingToken {
     action: MintActionType
   }
 }
