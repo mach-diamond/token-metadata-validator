@@ -14,7 +14,7 @@ use metadata/util.{
 }
 use aiken/transaction/value
 
-// --- Amortized Asset Transfer Smart Contract ---------------------------------
+/// --- Asset Metadata Validation Smart Contract -------------------------------
 validator(
   spent_utxo: OutputReference,
 ) {
