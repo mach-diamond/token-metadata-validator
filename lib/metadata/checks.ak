@@ -22,23 +22,3 @@ pub fn valid_mint(
 
   mint_amount == quantity && mint_token_name == token_name
 }
-
-
-
-
-pub fn state_initialization(
-  state: State,
-) -> Bool {
-  True
-}
-
-
-pub fn state_update(
-  script_state: State,
-  new_script_state: State,
-  mint_amnt: int,
-) -> Bool {
-  True
-}
-
-

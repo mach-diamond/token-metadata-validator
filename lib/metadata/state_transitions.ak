@@ -4,13 +4,12 @@ use metadata/types/data.{State}
 pub fn state_initialization(
   initial_conditions: State,    /// Initial state of script
 ) -> Bool {
-  True
+  initial_conditions.mint == 0
 }
 
 pub fn state_update(
   script_state: State,          /// Current script state
   new_script_state: State,      /// Incoming script state
-) -> Bool {
-  True
+) -> Int {
+  new_script_state.mint - initial_conditions.mint
 }
-

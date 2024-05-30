@@ -4,7 +4,10 @@ use aiken/transaction.{
 use metadata/types/data.{State, ContractInfo}
 use metadata/types/actions.{InitialToken, MintActions, SpendActions, VendingToken, MintToken,  BurnToken, Admin, Minter}
 use metadata/checks.{
-  has_unique_input, valid_mint, state_initialization, state_update
+  has_unique_input, valid_mint, 
+}
+use metadata/state_transitions.{
+  state_initialization, state_update
 }
 use metadata/util.{
   get_state_update, get_contract_state
@@ -89,10 +92,7 @@ validator(
           MintToken -> {
             trace @"Mint Action: Mint Vending Token"
 
-            let num_mint = 1
-
-            let isValidStateUpdate =
-              state_update(script_state, incoming_script_state, num_mint)
+            let num_mint = state_update(script_state, incoming_script_state)
             let vendingTokenBeingMinted =
               valid_mint(
                 mint,
@@ -101,15 +101,25 @@ validator(
                 num_mint,
               )
             and {
-              isValidStateUpdate,
+              num_mint > 0,
               vendingTokenBeingMinted
             }
           }
           
           BurnToken -> {
             trace @"Mint Action: Burn Vending Token"
-            {
-              True
+
+            let num_mint = state_update(script_state, incoming_script_state)
+            let vendingTokenBeingMinted =
+              valid_mint(
+                mint,
+                script_policy_id,
+                "SomeEnforcedTokenName_Vending",
+                num_mint,
+              )
+            and {
+              num_mint < 0,
+              vendingTokenBeingMinted
             }
           }
         }
