@@ -3,7 +3,6 @@ use aiken/transaction/value.{lovelace_of}
 use aiken/transaction.{InlineDatum, Input, Output}
 use aiken/transaction/credential.{ScriptCredential}
 use metadata/types/data.{State, ContractInfo}
-use aiken/string.{concat, from_int}
 
 // Get's the User proposed state update
 pub fn get_state_update(

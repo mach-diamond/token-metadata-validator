@@ -1,8 +1,8 @@
 use aiken/transaction.{
- Mint, OutputReference, ScriptContext, Spend, Transaction,
+ Mint, OutputReference, ScriptContext, Transaction,
 }
-use metadata/types/data.{State, ContractInfo}
-use metadata/types/actions.{InitialToken, MintActions, SpendActions, VendingToken, MintToken,  BurnToken, Admin, Minter}
+use metadata/types/data.{ContractInfo}
+use metadata/types/actions.{InitialToken, MintActions, VendingToken, MintToken,  BurnToken}
 use metadata/checks.{
   has_unique_input, valid_mint, 
 }
@@ -12,7 +12,7 @@ use metadata/state_transitions.{
 use metadata/util.{
   get_state_update, get_contract_state
 }
-use aiken/transaction/value.{flatten, lovelace_of}
+use aiken/transaction/value
 
 // --- Amortized Asset Transfer Smart Contract ---------------------------------
 validator(
@@ -31,7 +31,7 @@ validator(
     } = transaction
 
     // Expect single signer
-    expect [signer] = extra_signatories
+    expect [_] = extra_signatories
 
     // Expect that the tx is minting
     expect Mint(script_policy_id) = purpose
@@ -43,7 +43,7 @@ validator(
     trace @"Mint Preamble Complete"
 
     // Get the incoming script state
-    let ContractInfo {state: incoming_script_state,  lovelace: amnt_input} = get_state_update(outputs, script_policy_id)
+    let ContractInfo {state: incoming_script_state,  lovelace: _} = get_state_update(outputs, script_policy_id)
     
     when mint_validation is {
 
@@ -82,10 +82,8 @@ validator(
       /// Vending Token
       VendingToken { action } -> {
 
-
         // Get the current script state - Note: no script state exists before Minting an initiating token
-        let ContractInfo {state: script_state,  lovelace: amnt_locked} = get_contract_state(inputs, script_policy_id)
-
+        let ContractInfo {state: script_state,  lovelace: _} = get_contract_state(inputs, script_policy_id)
 
         when action is {
 
@@ -126,46 +124,4 @@ validator(
       }
     }
   }
-
-  // --- Spend Validation Logic  -----------------------------------------------
-  fn spend(
-    _datum: Data,
-    spend_validation: SpendActions,
-    context: ScriptContext,
-  ) -> Bool {
-    // Short Description: 
-    //    .....
-
-    // Get the purpose of the tx and deconstruct its primary components
-    let ScriptContext { transaction, purpose } = context
-    let Transaction {
-      mint,
-      ..
-    } = transaction
-
-    // Check that the purpose of the tx is to SPEND
-    expect Spend(self_utxo_reference) = purpose
-
-    trace @"Spend Preamble Complete"
-
-    // Selection of the logic gates for the spending behavior of the contract's UTXO 
-    when spend_validation is {
-
-      /// 
-      Admin { action } -> 
-        {
-          trace @"Admin Spend: ..."
-          True
-        }
-
-      /// 
-      Minter { action } -> 
-        {
-          trace @"Minter Spend: ..."
-          True
-        }
-
-    }
-  }
-
 }
